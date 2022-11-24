@@ -1,13 +1,16 @@
 <script>
-  import Counter from "./lib/Counter.svelte";
   import Header from "./lib/Header.svelte";
+  import NerdleGame from "./lib/NerdleGame.svelte";
+
+  const xy = {
+    width: 8,
+    height: 6,
+  };
 </script>
 
 <div class="container">
   <Header />
-  <main>
-    <Counter />
-  </main>
+  <NerdleGame {...xy} />
 </div>
 
 <style>
