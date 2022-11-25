@@ -24,13 +24,13 @@
      * Disable this if you'd like to use dynamic types.
      */
     "checkJs": true,
-      "baseUrl": ".",
-      "paths": {
-        "$lib/*": ["src/lib/*"],
-        "$utils/*": ["src/utils/*"],
-        "$stores/*": ["src/stores/*"],
-        "$assets/*": ["src/assets/*"]
-      }
+    "baseUrl": ".",
+    "paths": {
+      "$lib/*": ["src/lib/*"],
+      "$utils/*": ["src/utils/*"],
+      "$stores/*": ["src/stores/*"],
+      "$assets/*": ["src/assets/*"]
+    }
   },
   /**
    * Use global.d.ts instead of compilerOptions.types

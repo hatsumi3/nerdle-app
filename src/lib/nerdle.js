@@ -2,10 +2,10 @@
 
 /** cellの状態一覧 */
 const cellStates = {
-    notVerified: "NOT_VERIFIED",
-    notIncluded: "NOT_INCLUDED",
-    included: "INCLUDED",
-    correct: "CORRECT"
+    notVerified: "not-verified",
+    notIncluded: "not-included",
+    included: "included",
+    correct: "correct"
 }
 
 /**
@@ -31,7 +31,7 @@ const createNerdle = (row, column) => {
         setValue: function (cell, value) {
             if (!(cell.row >= 0 && cell.row < this.rowSize)) return;
             if (!(cell.column >= 0 && cell.column < this.columnSize)) return;
-            this.grid[cell.row][cell.column] = { ...this.grid[cell.row][cell.column], value: value };
+            this.grid[cell.row][cell.column] = { ...this.grid[cell.row][cell.column], value };
         },
     }
     return nerdle

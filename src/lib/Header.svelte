@@ -1,5 +1,5 @@
 <script>
-  import svelteLogo from "./../assets/svelte.svg";
+  import svelteLogo from "$assets/svelte.svg";
 </script>
 
 <header class="header">

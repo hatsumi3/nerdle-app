@@ -1,5 +1,6 @@
 <script>
   import { createNerdle } from "./nerdle.js";
+  import { openAlertFor } from "../stores/AlertOpen.js";
 
   //TODO: 定数読込
   // 確認用:
@@ -13,7 +14,7 @@
   // nerdle object
   let nerdle = createNerdle(ROW, COLUMN);
 
-  // 入力可能セル
+  // 選択セル(黒枠)
   const selectedCell = {
     row: 0,
     column: 0,
@@ -35,6 +36,7 @@
     }
   }
 
+  // key binding.
   function handleKeydown(event) {
     switch (event.key) {
       case "ArrowRight":
@@ -44,7 +46,7 @@
         moveLeft();
         return;
       case "Enter":
-        moveNextRow();
+        verify();
         return;
       case "Backspace":
       case "Delete":
@@ -76,13 +78,14 @@
     }
   }
 
+  // cellの値更新
   function nerdleSetValue(value) {
     nerdle.setValue(selectedCell, value);
     //リアクティビティが代入によってトリガー
     nerdle = nerdle;
   }
 
-  //
+  // 選択セルの移動
   function moveNextRow() {
     if (selectedCell.row < ROW - 1) {
       selectedCell.row += 1;
@@ -99,6 +102,11 @@
       selectedCell.column -= 1;
     }
   }
+
+  function verify() {
+    openAlertFor(2000);
+    moveNextRow();
+  }
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
@@ -108,9 +116,10 @@
     <div class="row" name="row{i}">
       {#each [...Array(COLUMN).keys()] as c, j}
         <div
-          class="block {selectedCell.row == i && selectedCell.column == j
+          class="block {nerdle.grid[i][j].state} {selectedCell.row == i &&
+          selectedCell.column == j
             ? 'selected'
-            : ''}"
+            : ''} "
           role="navigation"
           name="cell{i}{j}"
           on:click={selected}
@@ -240,7 +249,7 @@
     <button
       aria-label="Enter"
       class="input-button text"
-      on:click={() => moveNextRow()}
+      on:click={() => verify()}
     >
       <span class="text-base">Enter</span>
     </button>
@@ -260,6 +269,7 @@
 <div>{typeof selectedCell.row} - {typeof selectedCell.column}</div>
 
 <style>
+  /* グリッド */
   .grid {
     padding-bottom: 1rem;
   }
@@ -281,19 +291,35 @@
     color: white;
     height: 3.2rem;
     width: 3.5rem;
-    background-color: #989484;
   }
   .block.selected {
     border-color: black;
   }
 
+  .block.not-verified {
+    background-color: #989484;
+  }
+
+  .block.not-included {
+    border-color: rgb(22 24 3);
+    background-color: rgb(22 24 3);
+  }
+  .block.included {
+    border-color: rgb(57 136 116);
+    background-color: rgb(57 136 116);
+  }
+  .block.correct {
+    border-color: rgb(130 4 88);
+    background-color: rgb(130 4 88);
+  }
+
+  /* 入力ボタン */
   .button-area {
     display: flex;
     justify-content: center;
     margin-bottom: 0.25rem;
     user-select: none;
   }
-
   .input-button {
     border-radius: 0.25rem;
     display: flex;
@@ -311,14 +337,12 @@
   .input-button.text {
     width: 65.4px;
   }
-
   .input-button:hover {
     background-color: rgb(203 213 225);
   }
   .input-button:active {
     background-color: rgb(148 163 184);
   }
-
   .text-base {
     font-size: 1rem;
   }
