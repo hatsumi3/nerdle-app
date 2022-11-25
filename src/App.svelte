@@ -1,16 +1,11 @@
 <script>
   import Header from "./lib/Header.svelte";
   import NerdleGame from "./lib/NerdleGame.svelte";
-
-  const xy = {
-    width: 8,
-    height: 6,
-  };
 </script>
 
 <div class="container">
   <Header />
-  <NerdleGame {...xy} />
+  <NerdleGame />
 </div>
 
 <style>
