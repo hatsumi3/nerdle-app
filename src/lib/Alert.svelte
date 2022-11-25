@@ -1,15 +1,11 @@
 <script>
-  import { isAlertOpen } from "../stores/AlertOpen.js";
+  import { isAlertOpen, alertMessage } from "../stores/Alert.js";
   let isClear = false;
 </script>
 
 {#if $isAlertOpen}
   <div class="alert {isClear ? 'clear' : ''}">
-    {#if !isClear}
-      <span>That guess doesn't compute! </span>
-    {:else}
-      <span>Congratulations! </span>
-    {/if}
+    {$alertMessage}
   </div>
 {/if}
 

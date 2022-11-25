@@ -1,15 +1,10 @@
 <script>
   import { createNerdle } from "./nerdle.js";
-  import { openAlertFor } from "../stores/AlertOpen.js";
+  import { openAlertFor } from "../stores/Alert.js";
+  import { onMount } from "svelte";
 
-  //TODO: 定数読込
-  // 確認用:
-  // $: console.log(
-  //   import.meta.env.VITE_NERDLE_ROW,
-  //   import.meta.env.VITE_NERDLE_COLUMN
-  // );
-  const ROW = 6;
-  const COLUMN = 8;
+  const ROW = parseInt(import.meta.env.VITE_NERDLE_ROW) || 6;
+  const COLUMN = parseInt(import.meta.env.VITE_NERDLE_COLUMN) || 8;
 
   // nerdle object
   let nerdle = createNerdle(ROW, COLUMN);
