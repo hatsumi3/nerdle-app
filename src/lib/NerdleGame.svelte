@@ -128,7 +128,6 @@
     }
     //リアクティビティが代入によってトリガー
     nerdle = nerdle;
-    console.log(nerdle.grid);
   }
 </script>
 

@@ -110,7 +110,6 @@ const createNerdle = (row, column, mode = {}) => {
                 if (count <= problemKeyCount) continue;
                 // 文字数が合うまで,stateの変更を行う
                 let changeCount = count - problemKeyCount;
-                console.log(key, changeCount)
                 for (let j = 0; j < this.columnSize; j++) {
                     if (this.grid[row][j].value != key) continue;
                     if (this.grid[row][j].state === cellStates.correct) continue;
@@ -161,7 +160,6 @@ const createNerdle = (row, column, mode = {}) => {
             return formulaStates.success
         }
     }
-    console.log(nerdle)
     return nerdle
 }
 
