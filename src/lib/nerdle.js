@@ -48,15 +48,40 @@ const createNerdle = (row, column, mode = {}) => {
             for (let j = 0; j < this.columnSize; j++) {
                 formula += this.grid[row][j].value + "";
             }
-            // const result = this.api.verify(formula)
-            return this.checkGameState(row)
+            const formulaState = this.verifyFormulaState(formula)
+            if (formulaState === formulaStates.error) return formulaState
+            const gameState = this.verifyGameState(formula)
+            return gameState
         },
-        checkGameState: function (row) {
+        verifyGameState: function (formula) {
+
             // return gameStates.failed
-            // return gameStates.continue
+            return gameStates.continue
             // return gameStates.success;
-            return formulaStates.error;
         },
+        verifyFormulaState: function (formula) {
+            // 1. =が1つのみ
+            const formulaArray = formula.split('=')
+            if (formulaArray.length !== 2) return formulaStates.error;
+
+            // 2. 右辺が数値(記号が含まれない)
+            const regexNum = /^[1-9][0-9]*$/
+            if (!regexNum.test(formulaArray[1])) return formulaStates.error;
+
+            // 3. 左辺に記号が連続しない、記号の間は数値である
+            const regexSign = /\+|-|\*|\//
+            const leftFormula = formulaArray[0].split(regexSign)
+            if (leftFormula.includes("")) return formulaStates.error
+            for (let num of leftFormula) {
+                if (!regexNum.test(num)) return formulaStates.error;
+            }
+
+            // 4. 統合が成立
+            const leftResult = Function('return (' + formulaArray[0] + ');')();
+            const rightResult = Number(formulaArray[1])
+            if (leftResult !== rightResult) return formulaStates.error
+            return formulaStates.success
+        }
     }
     console.log(nerdle)
     return nerdle
