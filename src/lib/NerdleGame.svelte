@@ -2,6 +2,7 @@
   import { createNerdle } from "./nerdle.js";
   import { gameStates, formulaStates } from "./const";
   import { nerdleAlertUtil } from "./nerdleAlertUtil.js";
+  import { createSelectedCell } from "./selectedCell.js";
 
   /** initialize */
 
@@ -13,32 +14,24 @@
   let nerdle = createNerdle(ROW, COLUMN);
 
   // 選択セル(黒枠)
-
-  let selectedCell = {
-    row: 0,
-    column: 0,
-  };
+  let selectedCell = createSelectedCell(ROW, COLUMN);
 
   // 選択セルの移動・無効化
   function moveNextRow() {
-    if (selectedCell.row >= 0 && selectedCell.row < ROW - 1) {
-      selectedCell.row += 1;
-      selectedCell.column = 0;
-    }
+    selectedCell.moveNextRow();
+    selectedCell = selectedCell;
   }
   function moveRight() {
-    if (selectedCell.column >= 0 && selectedCell.column < COLUMN - 1) {
-      selectedCell.column += 1;
-    }
+    selectedCell.moveRight();
+    selectedCell = selectedCell;
   }
   function moveLeft() {
-    if (selectedCell.column > 0) {
-      selectedCell.column -= 1;
-    }
+    selectedCell.moveLeft();
+    selectedCell = selectedCell;
   }
   function fixed() {
-    selectedCell.row = -1;
-    selectedCell.column = -1;
+    selectedCell.fixed();
+    selectedCell = selectedCell;
   }
 
   // mouse click(選択セル)
