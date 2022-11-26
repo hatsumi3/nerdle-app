@@ -1,6 +1,6 @@
 {
-  "name": "SVELTE-PWA",
-  "short_name": "SVELTE-PWA",
+  "name": "Nerdle - the daily numbers game",
+  "short_name": "Nerdle",
   "icons": [
     {
       "src": "/images/icons/icon-128x128.png",

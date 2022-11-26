@@ -244,12 +244,13 @@
     background-color: rgb(57 136 116);
   }
 
-  /* 入力ボタン */
+  /* 入力ボタンエリア */
   .button-area {
     display: flex;
     justify-content: center;
     margin-bottom: 0.25rem;
     user-select: none;
+    flex-wrap: wrap;
   }
   .input-button {
     border-radius: 0.25rem;

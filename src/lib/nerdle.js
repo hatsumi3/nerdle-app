@@ -8,6 +8,7 @@ const createProblem = (column, mode = {}) => {
     return candidate[Math.floor(Math.random() * candidate.length)]
 }
 
+// 文字種別のカウント情報をもつオブジェクトを生成
 const createCountStrObject = (str) => {
     let retObj = {}
     for (let i = 0; i < str.length; i++) {
@@ -23,9 +24,11 @@ const createCountStrObject = (str) => {
  * nerdle.gird: row * columnの2次元配列.cellにはvalue,stateを持つオブジェクト.
  * nerdle.grid.value: 数値、記号.
  * nerdle.grid.state: cellStatesのいずれか.
+ * nerdle.gridSummary: 数字または記号がキー、cellStateがvalueのオブジェクト.
  * nerdle.setValue: gridへのsetter. cell.row, cell.columnへvalueを挿入.
  * nerdle.setState: gridへのsetter. cell.row, cell.columnへstateを挿入.
  * nerdle.problem: 問題文字列.
+ * nerdle.problemCountStr: 問題文字列の文字種別のカウント.
  * nerdle.gameState: ゲーム状態.
  * nerdle.verify: 数式、ゲーム状態の検証.
  * nerdle.verifyGameState: 数式の検証.
@@ -50,11 +53,13 @@ const createNerdle = (row, column, mode = {}) => {
         })),
         gridSummary: [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, '+', '-', '*', '/', '='].reduce((acc, cur) => ({ ...acc, [cur]: cellStates.notVerified }), {}),
         setValue: function (cell, value) {
+            // cell validate
             if (!(cell.row >= 0 && cell.row < this.rowSize)) return;
             if (!(cell.column >= 0 && cell.column < this.columnSize)) return;
             this.grid[cell.row][cell.column] = { ...this.grid[cell.row][cell.column], value };
         },
         setState: function (cell, state) {
+            // cell validate
             if (!(cell.row >= 0 && cell.row < this.rowSize)) return;
             if (!(cell.column >= 0 && cell.column < this.columnSize)) return;
             this.grid[cell.row][cell.column] = { ...this.grid[cell.row][cell.column], state };
@@ -137,15 +142,18 @@ const createNerdle = (row, column, mode = {}) => {
             return this.gameState
         },
         verifyFormulaState: function (formula) {
-            // 1. =が1つのみ
+            // 1. 文字数がcolumnと同じ
+            if (formula.length !== this.columnSize) return formulaStates.error;
+
+            // 2. =が1つのみ
             const formulaArray = formula.split('=')
             if (formulaArray.length !== 2) return formulaStates.error;
 
-            // 2. 右辺が数値(記号が含まれない)
+            // 3. 右辺が数値(記号が含まれない)
             const regexNum = /^[1-9][0-9]*$/
             if (!regexNum.test(formulaArray[1])) return formulaStates.error;
 
-            // 3. 左辺に記号が連続しない、かつ記号の間は数値である
+            // 4. 左辺に記号が連続しない、かつ記号の間は数値である
             const regexSign = /\+|-|\*|\//
             const leftFormula = formulaArray[0].split(regexSign)
             if (leftFormula.includes("")) return formulaStates.error
@@ -153,7 +161,7 @@ const createNerdle = (row, column, mode = {}) => {
                 if (!regexNum.test(num)) return formulaStates.error;
             }
 
-            // 4. 統合が成立
+            // 5. 等号が成立
             const leftResult = Function('return (' + formulaArray[0] + ');')();
             const rightResult = Number(formulaArray[1])
             if (leftResult !== rightResult) return formulaStates.error
