@@ -30,12 +30,7 @@ const createNerdle = (row, column, mode = {}) => {
             value: "",
             state: cellStates.notVerified
         })),
-        gridSummary: [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, '+', '-', '*', '/', '='].map((val) => {
-            return {
-                value: val,
-                state: cellStates.notVerified
-            }
-        }),
+        gridSummary: [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, '+', '-', '*', '/', '='].reduce((acc, cur) => ({ ...acc, [cur]: cellStates.notVerified }), {}),
         setValue: function (cell, value) {
             if (!(cell.row >= 0 && cell.row < this.rowSize)) return;
             if (!(cell.column >= 0 && cell.column < this.columnSize)) return;
