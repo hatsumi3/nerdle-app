@@ -36,13 +36,13 @@ Finally to start the server execute this script
 npm run dev
 ```
 
-### All Package.json scripts
+## All Package.json scripts
 
 **dev** - Starts a dev server \
 **build** - Build production optimized code \
 **preview** - Preview the app(if built) in the browser
 
-### .env variables
+## .env variables
 
 **VITE_NERDLE_ROW** - grid row number. \
 **VITE_NERDLE_COLUMN** - grid column number.

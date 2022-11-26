@@ -1,21 +1,47 @@
 <script>
   import { createNerdle } from "./nerdle.js";
-  import { openAlertFor } from "../stores/Alert.js";
-  import { onMount } from "svelte";
+  import { gameStates, formulaStates } from "./const";
+  import { nerdleAlertUtil } from "./nerdleAlertUtil.js";
 
+  /** initialize */
+
+  //.env
   const ROW = parseInt(import.meta.env.VITE_NERDLE_ROW) || 6;
   const COLUMN = parseInt(import.meta.env.VITE_NERDLE_COLUMN) || 8;
 
-  // nerdle object
+  // nerdle instance
   let nerdle = createNerdle(ROW, COLUMN);
 
   // 選択セル(黒枠)
-  const selectedCell = {
+
+  let selectedCell = {
     row: 0,
     column: 0,
   };
 
-  // click
+  // 選択セルの移動・無効化
+  function moveNextRow() {
+    if (selectedCell.row >= 0 && selectedCell.row < ROW - 1) {
+      selectedCell.row += 1;
+      selectedCell.column = 0;
+    }
+  }
+  function moveRight() {
+    if (selectedCell.column >= 0 && selectedCell.column < COLUMN - 1) {
+      selectedCell.column += 1;
+    }
+  }
+  function moveLeft() {
+    if (selectedCell.column > 0) {
+      selectedCell.column -= 1;
+    }
+  }
+  function fixed() {
+    selectedCell.row = -1;
+    selectedCell.column = -1;
+  }
+
+  // mouse click(選択セル)
   function selected(event) {
     const elementName = event.target.getAttribute("name");
     // エラーハンドリング
@@ -33,6 +59,7 @@
 
   // key binding.
   function handleKeydown(event) {
+    if (nerdle.gameState !== gameStates.continue) return;
     switch (event.key) {
       case "ArrowRight":
         moveRight();
@@ -80,27 +107,25 @@
     nerdle = nerdle;
   }
 
-  // 選択セルの移動
-  function moveNextRow() {
-    if (selectedCell.row < ROW - 1) {
-      selectedCell.row += 1;
-      selectedCell.column = 0;
-    }
-  }
-  function moveRight() {
-    if (selectedCell.column < COLUMN - 1) {
-      selectedCell.column += 1;
-    }
-  }
-  function moveLeft() {
-    if (selectedCell.column > 0) {
-      selectedCell.column -= 1;
-    }
-  }
-
+  // 判定
   function verify() {
-    openAlertFor(2000);
-    moveNextRow();
+    switch (nerdle.verify(selectedCell.row)) {
+      case gameStates.success:
+        nerdleAlertUtil.gameClear();
+        fixed();
+        return;
+      case gameStates.continue:
+        moveNextRow();
+        return;
+      case formulaStates.error:
+        nerdleAlertUtil.formulaError();
+        return;
+      case gameStates.failed:
+      default:
+        nerdleAlertUtil.gameFailed(nerdle.problem);
+        fixed();
+        return;
+    }
   }
 </script>
 
@@ -132,7 +157,7 @@
     {#each [1, 2, 3, 4, 5, 6, 7, 8, 9, 0] as number}
       <button
         aria-label={number + ""}
-        class="input-button"
+        class="input-button not-verified"
         on:click={() => {
           nerdleSetValue(number);
           moveRight();
@@ -290,22 +315,20 @@
   .block.selected {
     border-color: black;
   }
-
   .block.not-verified {
     background-color: #989484;
   }
-
   .block.not-included {
     border-color: rgb(22 24 3);
     background-color: rgb(22 24 3);
   }
   .block.included {
-    border-color: rgb(57 136 116);
-    background-color: rgb(57 136 116);
-  }
-  .block.correct {
     border-color: rgb(130 4 88);
     background-color: rgb(130 4 88);
+  }
+  .block.correct {
+    border-color: rgb(57 136 116);
+    background-color: rgb(57 136 116);
   }
 
   /* 入力ボタン */
@@ -321,24 +344,37 @@
     align-items: center;
     justify-content: center;
     margin: 0 0.125rem;
-    font-size: 1.125rem;
     font-weight: 700;
     height: 3.2rem;
     width: 40px;
     user-select: none;
     cursor: pointer;
-    background-color: rgb(226 232 240);
   }
   .input-button.text {
     width: 65.4px;
   }
-  .input-button:hover {
-    background-color: rgb(203 213 225);
-  }
-  .input-button:active {
-    background-color: rgb(148 163 184);
-  }
   .text-base {
     font-size: 1rem;
+  }
+  .input-button.not-verified {
+    background-color: rgb(226 232 240);
+  }
+  .input-button.not-verified:hover {
+    background-color: rgb(203 213 225);
+  }
+  .input-button.not-verified:active {
+    background-color: rgb(148 163 184);
+  }
+  .input-button.not-included {
+    border-color: rgb(22 24 3);
+    background-color: rgb(22 24 3);
+  }
+  .input-button.included {
+    border-color: rgb(130 4 88);
+    background-color: rgb(130 4 88);
+  }
+  .input-button.correct {
+    border-color: rgb(57 136 116);
+    background-color: rgb(57 136 116);
   }
 </style>

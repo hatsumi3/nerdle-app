@@ -3,6 +3,7 @@ import { writable } from 'svelte/store';
 /** @type {import('svelte/store').Writable} boolean store. Alert.svelteの表示有無. */
 const isAlertOpen = writable(false);
 const alertMessage = writable("sample message");
+const alertColor = writable("clear");
 
 /**
  * 表示.millisecond秒後非表示.
@@ -17,4 +18,4 @@ const openAlertFor = (millisecond) => {
 }
 
 
-export { isAlertOpen, alertMessage, openAlertFor };
+export { isAlertOpen, alertMessage, alertColor, openAlertFor };
